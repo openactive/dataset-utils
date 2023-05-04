@@ -1,0 +1,26 @@
+{
+  "name": "@openactive/data-catalog-crawler",
+  "version": "1.0.0",
+  "description": "Crawls OpenActive data-catalogs and returns an array of dataset sites",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openactive/data-catalog-crawler.git"
+  },
+  "keywords": [
+    "data-catalog-crawler",
+    "openactive"
+  ],
+  "author": "Civ Sivakumaran",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/openactive/data-catalog-crawler/issues"
+  },
+  "homepage": "https://github.com/openactive/data-catalog-crawler#readme",
+  "dependencies": {
+    "axios": "^1.4.0"
+  }
+}
