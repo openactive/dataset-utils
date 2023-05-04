@@ -22,5 +22,9 @@
   "homepage": "https://github.com/openactive/data-catalog-crawler#readme",
   "dependencies": {
     "axios": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.41",
+    "typescript": "^5.0.4"
   }
 }
