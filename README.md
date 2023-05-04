@@ -1,2 +1,2 @@
-# data-catalog-crawler
-Crawls OpenActive data-catalogs and returns an array of dataset sites
+# dataset-utils
+JavaScript functions to read and parse OpenActive data-catalogs and Dataset Sites
