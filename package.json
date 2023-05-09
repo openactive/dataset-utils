@@ -1,5 +1,5 @@
 {
-  "name": "@openactive/data-catalog-crawler",
+  "name": "@openactive/dataset-utils",
   "version": "1.0.0",
   "description": "Crawls OpenActive data-catalogs and returns an array of dataset sites",
   "main": "index.js",
@@ -8,18 +8,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openactive/data-catalog-crawler.git"
+    "url": "git+https://github.com/openactive/dataset-utils.git"
   },
   "keywords": [
-    "data-catalog-crawler",
+    "dataset-utils",
     "openactive"
   ],
   "author": "Civ Sivakumaran",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/openactive/data-catalog-crawler/issues"
+    "url": "https://github.com/openactive/dataset-utils/issues"
   },
-  "homepage": "https://github.com/openactive/data-catalog-crawler#readme",
+  "homepage": "https://github.com/openactive/dataset-utils#readme",
   "dependencies": {
     "axios": "^1.4.0"
   },
