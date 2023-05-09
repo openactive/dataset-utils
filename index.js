@@ -1,4 +1,6 @@
 const { default: axios } = require('axios');
+const { Handler } = require('htmlmetaparser');
+const { Parser } = require('htmlparser2');
 
 /**
  * This is a recursive function that returns an array of dataset site URLs.
@@ -32,4 +34,72 @@ async function recursivelyGetCatalogsToGetDatasetUrls(dataCatalogUrl) {
   return [];
 }
 
-module.exports = recursivelyGetCatalogsToGetDatasetUrls;
+/**
+ * This function extracts JSONLD metadata from dataset HTML
+ * 
+ * @param {string} url 
+ * @param {string} html 
+ */
+function extractJSONLDfromHTML(url, html) {
+  let jsonld = null;
+
+  const handler = new Handler(
+    (err, result) => {
+      if (!err && typeof result === 'object') {
+        const jsonldArray = result.jsonld;
+        // Use the first JSON-LD block on the page
+        if (Array.isArray(jsonldArray) && jsonldArray.length > 0) {
+          [jsonld] = jsonldArray;
+        }
+      }
+    },
+    {
+      url, // The HTML pages URL is used to resolve relative URLs. TODO: Remove this
+    },
+  );
+
+  // Create a HTML parser with the handler.
+  const parser = new Parser(handler, {
+    decodeEntities: true,
+  });
+  parser.write(html);
+  parser.done();
+
+  return jsonld;
+}
+
+/**
+ * This function recursively crawls through a data catalog, fetches datasets, and extracts JSONLD
+ * from dataset HTML.
+ * This combines recursivelyGetCatalogsToGetDatasetUrls() and extractJSONLDfromHTML()
+ * 
+ * @param {string} dataCatalogUrl
+ */
+async function extractJSONLDfromDatasetsFromDataCatalog(dataCatalogUrl) {
+  // Get Dataset URLs
+  const datasetUrls = await recursivelyGetCatalogsToGetDatasetUrls(dataCatalogUrl);
+
+  const jsonldFromDatasetUrls = (await Promise.all(datasetUrls.map(async (datasetUrl) => {
+    let dataset;
+    try {
+      // Get JSONLD from dataset URLS
+      dataset = (await axios.get(datasetUrl)).data;
+    } catch (error) {
+      console.error(`extractJSONLDFromDatasetsFromDataCatalog() - ${datasetUrl} could not be fetched`);
+      return null;
+    }
+
+    const jsonld = extractJSONLDfromHTML(datasetUrl, dataset);
+    return jsonld;
+  })))
+    // Filter out datasets that do not have valid dataset
+    .filter((x) => !!x);
+
+  return jsonldFromDatasetUrls;
+}
+
+module.exports = {
+  recursivelyGetCatalogsToGetDatasetUrls,
+  extractJSONLDfromHTML,
+  extractJSONLDfromDatasetsFromDataCatalog
+};
