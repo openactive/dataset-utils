@@ -16,6 +16,7 @@ async function recursivelyGetCatalogsToGetDatasetUrls(dataCatalogUrl) {
     catalog = (await axios.get(dataCatalogUrl, {timeout: 5000})).data;
   } catch (error) {
     console.error(`Error getting catalog or catalog collection, url: ${dataCatalogUrl}`)
+    return [];
   }
 
   // If catalog has hasPart, the part catalog must be fetched and the datasets got from the part catalog
