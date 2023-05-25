@@ -14,20 +14,20 @@ $ npm install @openactive/data-catalog-crawler --save
 ## Usage
 
 ```js
-const recursivelyGetCatalogsToGetDatasetUrls = require('@openactive/data-catalog-crawler');
+const getAllDatasetSiteUrls = require('@openactive/data-catalog-crawler');
 const EXAMPLE_DATA_CATALOG_COLLECTION = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld';
 
-var datasetUrls = recursivelyGetCatalogsToGetDatasetUrls(EXAMPLE_DATA_CATALOG_COLLECTION);
+var datasetUrls = getAllDatasetSiteUrls(EXAMPLE_DATA_CATALOG_COLLECTION);
 ```
 
 ## API Reference
-### recursivelyGetCatalogsToGetDatasetUrls
+### getAllDatasetSiteUrls
  This is a recursive function that returns an array of dataset site URLs.
  If the URL supplied is a data catalog collection, it takes all the part collections in hasPart and crawls them.
  If the URL supplied is a data catalog, it takes the dataset array and flattens them. 
 
 ### extractJSONLDfromHTML
 This function extracts JSONLD metadata from dataset HTML
-### extractJSONLDfromDatasetsFromDataCatalog
+### getAllDatasets
 This function recursively crawls through a data catalog, fetches datasets, and extracts JSONLD from dataset HTML.
-This combines recursivelyGetCatalogsToGetDatasetUrls() and extractJSONLDfromHTML()
+This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML()
