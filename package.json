@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/openactive/dataset-utils#readme",
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "htmlmetaparser": "^2.1.2",
+    "htmlparser2": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.41",
