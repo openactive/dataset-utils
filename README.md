@@ -5,7 +5,7 @@ A collection of JavaScript functions to read and parse OpenActive Data Catalogs 
 
 Install using NPM:
 ```
-$ npm install @openactive/data-catalog-crawler --save
+$ npm install @openactive/dataset-utils --save
 ```
 
 ## Dependencies
@@ -14,7 +14,7 @@ $ npm install @openactive/data-catalog-crawler --save
 ## Usage
 
 ```js
-const recursivelyGetCatalogsToGetDatasetUrls = require('@openactive/data-catalog-crawler');
+const recursivelyGetCatalogsToGetDatasetUrls = require('@openactive/dataset-utils');
 const EXAMPLE_DATA_CATALOG_COLLECTION = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld';
 
 var datasetUrls = recursivelyGetCatalogsToGetDatasetUrls(EXAMPLE_DATA_CATALOG_COLLECTION);
