@@ -27,8 +27,9 @@ var datasetUrls = await getAllDatasets(EXAMPLE_DATA_CATALOG_COLLECTION);
  If the URL supplied is a data catalog, it takes the dataset array and flattens them. 
  If `dataCatalogUrl` is not supplied, the default OpenActive Data Catalog (`https://openactive.io/data-catalogs/data-catalog-collection.jsonld`) is used.
 
-### extractJSONLDfromHTML(html)
+### extractJSONLDfromHTML(url, html)
 This function extracts JSONLD metadata from dataset HTML
+
 ### getAllDatasets(dataCatalogUrl)
 This function recursively crawls through a data catalog, fetches datasets, and extracts JSONLD from dataset HTML.
 This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML()
