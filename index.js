@@ -27,7 +27,7 @@ async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/dat
     return [].concat(...datasetArray);
   }
 
-  // If the catalog has dataset, it does not have ant further part catalogs and the datasets can be got from them
+  // If the catalog has dataset, it does not have any further part catalogs and the datasets can be got from them
   if (catalog.dataset) {
     return catalog.dataset;
   }
@@ -85,7 +85,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
   const jsonldFromDatasetUrls = (await Promise.all(datasetUrls.map(async (datasetUrl) => {
     let dataset;
     try {
-      // Get JSONLD from dataset URLS
+      // Get JSONLD from dataset URLs
       dataset = (await axios.get(datasetUrl)).data;
     } catch (error) {
       console.error(`getAllDatasets() - ${datasetUrl} could not be fetched`);
