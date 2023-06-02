@@ -1,0 +1,32 @@
+{
+  "name": "@openactive/dataset-utils",
+  "version": "1.0.0",
+  "description": "Crawls OpenActive data-catalogs and returns an array of dataset sites",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/openactive/dataset-utils.git"
+  },
+  "keywords": [
+    "dataset-utils",
+    "openactive"
+  ],
+  "author": "Civ Sivakumaran",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/openactive/dataset-utils/issues"
+  },
+  "homepage": "https://github.com/openactive/dataset-utils#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "htmlmetaparser": "^2.1.2",
+    "htmlparser2": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.41",
+    "typescript": "^5.0.4"
+  }
+}
