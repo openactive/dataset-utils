@@ -42,7 +42,7 @@ async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/dat
  * @param {string} url 
  * @param {string} html 
  */
-function extractJSONLDfromHTML(url, html) {
+function extractJSONLDfromHTML(html) {
   let jsonld = null;
 
   const handler = new Handler(
@@ -54,9 +54,6 @@ function extractJSONLDfromHTML(url, html) {
           [jsonld] = jsonldArray;
         }
       }
-    },
-    {
-      url, // The HTML pages URL is used to resolve relative URLs. TODO: Remove this
     },
   );
 
@@ -92,7 +89,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
       return null;
     }
 
-    const jsonld = extractJSONLDfromHTML(datasetUrl, dataset);
+    const jsonld = extractJSONLDfromHTML(dataset);
     return jsonld;
   })))
     // Filter out datasets that do not have valid dataset
