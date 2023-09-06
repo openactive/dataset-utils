@@ -1,0 +1,37 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.author.email, 'hello@openactive.io')"
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PUBLIC_REPO_ACCESS_TOKEN }}
+    - name: Identify
+      run: |
+        git config user.name OpenActive Bot
+        git config user.email hello@openactive.io
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+        registry-url: https://registry.npmjs.org/
+    - name: Install
+      run: npm ci
+    - name: Test
+      run: npm test
+    - name: Increment Version
+      run: npm version patch
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    - name: Push version update
+      run: git push
