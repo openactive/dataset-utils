@@ -77,8 +77,9 @@ function extractJSONLDfromHTML(url, html) {
  * If dataCatalogUrl is not supplied, the default OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
  * @param {string} [dataCatalogUrl]
+ * @param {boolean} [suppressConsoleErrors]
  */
-async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
+async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld', suppressConsoleErrors = false) {
   // Get Dataset URLs
   const datasetUrls = await getAllDatasetSiteUrls(dataCatalogUrl);
 
@@ -88,7 +89,9 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
       // Get JSONLD from dataset URLs
       dataset = (await axios.get(datasetUrl)).data;
     } catch (error) {
-      console.error(`getAllDatasets() - ${datasetUrl} could not be fetched`);
+      if (!suppressConsoleErrors) {
+        console.error(`getAllDatasets() - ${datasetUrl} could not be fetched`);
+      }
       return null;
     }
 
