@@ -5,18 +5,18 @@ const { Parser } = require('htmlparser2');
 /**
  * This is a recursive function that returns an array of dataset site URLs.
  * If the URL supplied is a data catalog collection, it takes all the part collections in hasPart and crawls them.
- * If the URL supplied is a data catalog, it takes the dataset array and flattens them. 
+ * If the URL supplied is a data catalog, it takes the dataset array and flattens them.
  * If the URL is not supplied, the OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
- * 
+ *
  * @param {string} [dataCatalogUrl]
  * @returns {Promise<string[]>}
  */
 async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   let catalog;
   try {
-    catalog = (await axios.get(dataCatalogUrl, {timeout: 5000})).data;
+    catalog = (await axios.get(dataCatalogUrl, { timeout: 5000 })).data;
   } catch (error) {
-    console.error(`Error getting catalog or catalog collection, url: ${dataCatalogUrl}`)
+    console.error(`Error getting catalog or catalog collection, url: ${dataCatalogUrl}`);
     return [];
   }
 
@@ -38,9 +38,9 @@ async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/dat
 
 /**
  * This function extracts JSONLD metadata from dataset HTML
- * 
- * @param {string} url 
- * @param {string} html 
+ *
+ * @param {string} url
+ * @param {string} html
  */
 function extractJSONLDfromHTML(url, html) {
   let jsonld = null;
@@ -75,7 +75,7 @@ function extractJSONLDfromHTML(url, html) {
  * from dataset HTML.
  * This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML().
  * If dataCatalogUrl is not supplied, the default OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
- * 
+ *
  * @param {string} [dataCatalogUrl]
  */
 async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
@@ -96,7 +96,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
     return jsonld;
   })))
     // Filter out datasets that do not have valid dataset
-    .filter((x) => !!x);
+    .filter(x => !!x);
 
   return jsonldFromDatasetUrls;
 }
@@ -104,5 +104,5 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
 module.exports = {
   getAllDatasetSiteUrls,
   extractJSONLDfromHTML,
-  getAllDatasets
+  getAllDatasets,
 };

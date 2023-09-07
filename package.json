@@ -4,7 +4,7 @@
   "description": "Crawls OpenActive data-catalogs and returns an array of dataset sites",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint && tsc"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,11 @@
     "htmlparser2": "^6.0.1"
   },
   "devDependencies": {
-    "@types/node": "^17.0.41",
+    "@types/node": "^20.5.9",
+    "eslint": "^8.48.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.1",
     "typescript": "^5.0.4"
   }
 }
