@@ -6,7 +6,7 @@ const dataCatalogCollection = require('./mockData/dataCatalogCollection');
 const singularDataCatalog = require('./mockData/singularDataCatalog');
 
 // Mock jest
-//jest.mock('axios');
+jest.mock('axios');
 
 // Note: This test tests getAllDatasets and therefore implicitly tests getAllDatasetSiteUrls and extractJSONLDfromHTML.
 // In future, tests should test all public functions individually.
@@ -17,15 +17,15 @@ describe('getAllDatasets()', function () {
     const exampleDatasetSite = exampleDatasetSiteBuffer.toString();
 
     // Mock
-    // axios.get.mockImplementation((url) => {
-    //   if (url === 'https://openactive.io/data-catalogs/example-data-catalog-collection.jsonld') { return Promise.resolve({ data: dataCatalogCollection }); }
-    //   if (url === 'https://openactive.io/data-catalogs/singular.jsonld') { return Promise.resolve({ data: singularDataCatalog }); }
-    //   if (url === 'https://openactive.io/dataset-site-template/Openactive') { return Promise.resolve({ data: exampleDatasetSite }); }
-    //   return Promise.reject(new Error('Not found'));
-    // });
+    axios.get.mockImplementation((url) => {
+      if (url === 'https://openactive.io/data-catalogs/example-data-catalog-collection.jsonld') { return Promise.resolve({ data: dataCatalogCollection }); }
+      if (url === 'https://openactive.io/data-catalogs/singular.jsonld') { return Promise.resolve({ data: singularDataCatalog }); }
+      if (url === 'https://openactive.io/dataset-site-template/Openactive') { return Promise.resolve({ data: exampleDatasetSite }); }
+      return Promise.reject(new Error('Not found'));
+    });
 
     // Test
-    const datasets = await getAllDatasets('https://openactive.io/data-catalogs/data-catalog-collection.jsonld');
+    const { jsonld: datasets } = await getAllDatasets('https://openactive.io/data-catalogs/example-data-catalog-collection.jsonld');
 
     // Assertions
     expect(datasets).to.be.an('array');
