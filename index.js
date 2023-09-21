@@ -76,26 +76,22 @@ function extractJSONLDfromHTML(url, html) {
  * This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML().
  * If dataCatalogUrl is not supplied, the default OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
- * `suppressConsoleErrors` is a boolean parameter that can be used to suppress the console errors generated when a dataset site does not correctly load.
- *  This can be large in number due to the fractured nature of maintainence of OpenActive feeds. Because of the large number, this parameter can be toggled on
- *  to prevent the console from being flooded with errors.
- *
  * @param {string} [dataCatalogUrl]
- * @param {boolean} [suppressConsoleErrors]
+ * @returns {Promise<{jsonld: Record<string,any>[], errors: string[]}>}
+ *
  */
-async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld', suppressConsoleErrors = false) {
+async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   // Get Dataset URLs
   const datasetUrls = await getAllDatasetSiteUrls(dataCatalogUrl);
 
+  const errors = [];
   const jsonldFromDatasetUrls = (await Promise.all(datasetUrls.map(async (datasetUrl) => {
     let dataset;
     try {
       // Get JSONLD from dataset URLs
       dataset = (await axios.get(datasetUrl)).data;
     } catch (error) {
-      if (!suppressConsoleErrors) {
-        console.error(`getAllDatasets() - ${datasetUrl} could not be fetched`);
-      }
+      errors.push(`getAllDatasets() - ${datasetUrl} could not be fetched, ${error.response?.status ? `status:${error.response?.status}, ` : ''}message: "${error.message}".`);
       return null;
     }
 
@@ -105,7 +101,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
     // Filter out datasets that do not have valid dataset
     .filter(x => !!x);
 
-  return jsonldFromDatasetUrls;
+  return { jsonld: jsonldFromDatasetUrls, errors };
 }
 
 module.exports = {
