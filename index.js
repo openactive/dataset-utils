@@ -76,6 +76,10 @@ function extractJSONLDfromHTML(url, html) {
  * This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML().
  * If dataCatalogUrl is not supplied, the default OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
+ * `suppressConsoleErrors` is a boolean parameter that can be used to suppress the console errors generated when a dataset site does not correctly load.
+ *  This can be large in number due to the fractured nature of maintainence of OpenActive feeds. Because of the large number, this parameter can be toggled on
+ *  to prevent the console from being flooded with errors.
+ *
  * @param {string} [dataCatalogUrl]
  * @param {boolean} [suppressConsoleErrors]
  */

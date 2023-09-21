@@ -32,7 +32,11 @@ This function extracts JSON-LD metadata from a given Dataset Site `html`, using 
 
 Note that relative URLs are not generally permissible within OpenActive data, however the JSON-LD library still requires that this be specified.
 
-### getAllDatasets(dataCatalogUrl)
+### getAllDatasets(dataCatalogUrl, suppressConsoleErrors = true)
 This function recursively crawls through a data catalog, fetches datasets, and extracts JSONLD from dataset HTML.
 This combines getAllDatasetSiteUrls() and extractJSONLDfromHTML()
 If `dataCatalogUrl` is not supplied, the default OpenActive Data Catalog (`https://openactive.io/data-catalogs/data-catalog-collection.jsonld`) is used.
+
+`suppressConsoleErrors` is a boolean parameter that can be used to suppress the console errors generated when a dataset site does not correctly load.
+This can be large in number due to the fractured nature of maintainence of OpenActive feeds. Because of the large number, this parameter can be toggled on 
+to prevent the console from being flooded with errors.
