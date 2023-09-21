@@ -5,7 +5,7 @@ const { getAllDatasets } = require('../index');
 const dataCatalogCollection = require('./mockData/dataCatalogCollection');
 const singularDataCatalog = require('./mockData/singularDataCatalog');
 
-// Mock jest
+// Mock axios
 jest.mock('axios');
 
 // Note: This test tests getAllDatasets and therefore implicitly tests getAllDatasetSiteUrls and extractJSONLDfromHTML.
