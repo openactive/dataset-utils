@@ -1,15 +1,6 @@
 # dataset-utils
 `@openactive/dataset-utils` is a Node.js utility library designed to simplify the handling of OpenActive data catalogs and dataset sites. The library facilitates fetching, parsing, and manipulating data from various dataset URLs within a specified catalog, ensuring a seamless interaction with OpenActive data.
 
-## Usage
-
-```js
-const { getAllDatasetSiteUrls } = require('@openactive/dataset-utils');
-const EXAMPLE_DATA_CATALOG_COLLECTION = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld';
-
-var datasetUrls = await getAllDatasets(EXAMPLE_DATA_CATALOG_COLLECTION);
-```
-
 ## Features
 
 - **Recursive Data Catalog Crawling**: Methodically navigates through data catalogs, fetches datasets, and extracts JSON-LD from dataset HTML.
