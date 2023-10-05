@@ -108,6 +108,35 @@ getAllDatasets().then(({ jsonld, errors }) => {
 });
 ```
 
+### `validateJsonLdId(id, expectHtml)`
+
+#### Description
+This function validates the `@id` (or `id`, for backwards compatibility) property within a JSON-LD `Dataset` or `DataCatalog`. It fetches JSON-LD data from a specified URL, checks whether the data is embedded in HTML or raw JSON-LD, extracts the JSON-LD, and ensures that the `@id` field within the document matches the provided `id`. This function acts as a safety check, affirming that the expected identifier aligns exactly with the identifier found within the fetched JSON-LD document. Note that `@id` is case sensitive and must match exactly.
+
+#### Parameters
+- `id` (string): A string that specifies the expected `@id` or `id` value in the JSON-LD document.
+- `expectHtml` (boolean): A boolean flag indicating whether the fetched data is expected to be embedded within HTML (when `true`) or expected to be raw JSON-LD (when `false`).
+
+#### Returns
+A `Promise` that resolves with an object containing:
+  - `valid` - A boolean that is `true` if the validation is successful (the expected `@id` matches the found `@id`) and `false` otherwise.
+  - `error` - A string describing the error encountered during the validation process or `null` if the validation is successful.
+
+#### Usage
+```javascript
+async function exampleUsage() {
+  const id = "https://example.com/data.jsonld";
+  const { valid, error } = await validateJsonLdId(id, false);
+
+  if (valid) {
+    console.log(`Validation successful for ID: ${id}`);
+  } else {
+    console.error(`Validation failed for ID: ${id}. Error: ${error}`);
+  }
+}
+```
+
+
 ## Testing
 
 Execute test cases using:
