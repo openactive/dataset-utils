@@ -1,6 +1,6 @@
 {
   "name": "@openactive/dataset-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utilities for working with OpenActive data catalogs and dataset sites",
   "homepage": "https://www.openactive.io",
   "main": "index.js",
