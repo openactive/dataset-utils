@@ -28,7 +28,7 @@ If the URL supplied is a data catalog, it gets the `dataset` array and flattens 
 - `dataCatalogUrl` (optional): A custom data catalog URL. Defaults to the [OpenActive Data Catalog](https://openactive.io/data-catalogs/data-catalog-collection.jsonld).
 
 #### Returns
-- `Promise<{urls: string[], errors: object[]}>`: The function returns a promise that resolves with an object containing two properties:
+A `Promise` that resolves with an object containing:
   - `urls` - An array of strings, each being a URL for a dataset.
   - `errors` - An array of error objects, each containing details about errors encountered during the retrieval process. If no errors were encountered, this array is empty. Each error object includes:
     - `url`: The URL from which data was being fetched when the error occurred.
