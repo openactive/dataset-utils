@@ -1,7 +1,7 @@
 {
   "name": "@openactive/dataset-utils",
   "version": "1.0.0",
-  "description": "Crawls OpenActive data-catalogs and returns an array of dataset sites",
+  "description": "Utilities for working with OpenActive data catalogs and dataset sites",
   "main": "index.js",
   "scripts": {
     "test": "eslint && tsc && jest"
