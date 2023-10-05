@@ -30,11 +30,11 @@ async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/dat
   // The catalog collection could have a catalog collection within in, which is why this function must be recursive.
   if (catalog.hasPart) {
     const datasetArraysAndErrors = await Promise.all(catalog.hasPart.map(partCatalogUrl => getAllDatasetSiteUrls(partCatalogUrl)));
-    
+
     // Concatenate all dataset URLs and errors.
     const allUrls = [].concat(...datasetArraysAndErrors.map(data => data.urls));
     const allErrors = [].concat(...datasetArraysAndErrors.map(data => data.errors));
-    
+
     return { urls: allUrls, errors: allErrors };
   }
 
@@ -93,9 +93,8 @@ function extractJSONLDfromHTML(url, html) {
  */
 async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   // Get Dataset URLs
-  const datasetUrls = await getAllDatasetSiteUrls(dataCatalogUrl);
+  const { urls: datasetUrls, errors } = await getAllDatasetSiteUrls(dataCatalogUrl);
 
-  const errors = [];
   const jsonldFromDatasetUrls = (await Promise.all(datasetUrls.map(async (datasetUrl) => {
     let dataset;
     try {
