@@ -16,25 +16,41 @@ npm install @openactive/dataset-utils
 ```
 ## Usage
 
-### `getAllDatasetSiteUrls([dataCatalogUrl])`
+
+### `getAllDatasetSiteUrls(dataCatalogUrl)`
+
+#### Description
 This is a recursive function that returns an array of dataset site URLs.
 If the URL supplied is a data catalog collection, it gets all the data catalogs in `hasPart` and crawls them.
 If the URL supplied is a data catalog, it gets the `dataset` array and flattens it. 
- 
-#### Parameters:
+
+#### Parameters
 - `dataCatalogUrl` (optional): A custom data catalog URL. Defaults to the [OpenActive Data Catalog](https://openactive.io/data-catalogs/data-catalog-collection.jsonld).
 
-#### Returns:
-A `Promise` that resolves with an array of string URLs of datasets.
+#### Returns
+- `Promise<{urls: string[], errors: object[]}>`: The function returns a promise that resolves with an object containing two properties:
+  - `urls` - An array of strings, each being a URL for a dataset.
+  - `errors` - An array of error objects, each containing details about errors encountered during the retrieval process. If no errors were encountered, this array is empty. Each error object includes:
+    - `url`: The URL from which data was being fetched when the error occurred.
+    - `status`: HTTP status code of the error response (if available).
+    - `message`: A descriptive message detailing the nature of the error.
 
-#### Example:
-```js
+#### Example
+```javascript
 const { getAllDatasetSiteUrls } = require('@openactive/dataset-utils');
 
-getAllDatasetSiteUrls().then(urls => {
-  console.log(urls);
-});
+const { urls, errors } = await getAllDatasetSiteUrls();
+
+console.log(`Retrieved ${urls.length} dataset URLs`);
+if (errors.length > 0) {
+  console.error(`${errors.length} errors encountered during retrieval:`);
+  errors.forEach(error => {
+    console.error(`- [${error.status}] ${error.url}: ${error.message}`);
+  });
+}
+
 ```
+
 
 ### `extractJSONLDfromHTML(url, html)`
 
