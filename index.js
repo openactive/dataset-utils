@@ -91,7 +91,11 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
       // Get JSONLD from dataset URLs
       dataset = (await axios.get(datasetUrl)).data;
     } catch (error) {
-      errors.push(`getAllDatasets() - ${datasetUrl} could not be fetched, ${error.response?.status ? `status:${error.response?.status}, ` : ''}message: "${error.message}".`);
+      errors.push({
+        url: datasetUrl,
+        status: error.response?.status,
+        message: error.message,
+      });
       return null;
     }
 
