@@ -99,7 +99,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
     let dataset;
     try {
       // Get JSONLD from dataset URLs
-      dataset = (await axios.get(datasetUrl)).data;
+      dataset = (await axiosGetWithRetry(datasetUrl)).data;
     } catch (error) {
       errors.push({
         url: datasetUrl,
@@ -148,7 +148,7 @@ async function validateJsonLdId(id, expectHtml) {
   let response;
 
   try {
-    response = await axios.get(id);
+    response = await axiosGetWithRetry(id);
     response = response.data;
   } catch (error) {
     return { valid: false, error: `Failed to resolve URL: ${error.message}` };
@@ -173,6 +173,35 @@ async function validateJsonLdId(id, expectHtml) {
   }
 
   return { valid: true, error: null };
+}
+
+/*
+* System-specific workaround: Note that rate limits in Legend can cause this request to fail with a 403 (?), so we retry up to 5 times
+* TODO: Ask Legend to return a 429 instead
+*/
+async function axiosGetWithRetry(url) {
+  let response;
+  const maxRetries = 5; // Define a maximum number of retries
+
+  async function sleep(milliseconds) {
+    return new Promise((resolve) => { setTimeout(resolve, milliseconds); });
+  }
+
+  for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+    try {
+      response = await axios.get(url);
+      break; // Exit the loop if the request was successful
+    } catch (error) {
+      if (error.response && error.response.status === 403 && attempt < maxRetries - 1) {
+        // Log a warning and retry after sleeping for a random duration between 1 and 3 seconds
+        console.warn(`Attempt ${attempt + 1}: Access forbidden (403) for URL: ${url}. Retrying...`);
+        await sleep(1000 + Math.random() * 2000); // Sleep for 1 to 3 seconds
+      } else {
+        throw error;
+      }
+    }
+  }
+  return response;
 }
 
 module.exports = {
