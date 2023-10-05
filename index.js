@@ -9,31 +9,42 @@ const { Parser } = require('htmlparser2');
  * If the URL is not supplied, the OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
  * @param {string} [dataCatalogUrl]
- * @returns {Promise<string[]>}
+ * @returns {Promise<{urls: string[], errors: object[]}>}
  */
 async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   let catalog;
+  const errors = [];
+
   try {
     catalog = (await axios.get(dataCatalogUrl, { timeout: 5000 })).data;
   } catch (error) {
-    console.error(`Error getting catalog or catalog collection, url: ${dataCatalogUrl}`);
-    return [];
+    errors.push({
+      url: dataCatalogUrl,
+      status: error.response?.status,
+      message: error.message,
+    });
+    return { urls: [], errors };
   }
 
-  // If catalog has hasPart, the part catalog must be fetched and the datasets got from the part catalog
-  // The part catalog could have a part catalog within in, which is why this function must be recursive.
+  // If catalog has `hasPart` it is a collection, so the data catalogs must be fetched and the `dataset`s retrieved from the data catalogs
+  // The catalog collection could have a catalog collection within in, which is why this function must be recursive.
   if (catalog.hasPart) {
-    const datasetArray = await Promise.all(catalog.hasPart.map(partCatalogUrl => getAllDatasetSiteUrls(partCatalogUrl)));
-    return [].concat(...datasetArray);
+    const datasetArraysAndErrors = await Promise.all(catalog.hasPart.map(partCatalogUrl => getAllDatasetSiteUrls(partCatalogUrl)));
+    
+    // Concatenate all dataset URLs and errors.
+    const allUrls = [].concat(...datasetArraysAndErrors.map(data => data.urls));
+    const allErrors = [].concat(...datasetArraysAndErrors.map(data => data.errors));
+    
+    return { urls: allUrls, errors: allErrors };
   }
 
-  // If the catalog has dataset, it does not have any further part catalogs and the datasets can be got from them
+  // If the catalog has `dataset`, it does not have any further part catalogs and the datasets can be got from them
   if (catalog.dataset) {
-    return catalog.dataset;
+    return { urls: catalog.dataset, errors: [] };
   }
 
-  // If the catalog has neither hasPart or dataset, return [] as it does not have the information we want
-  return [];
+  // If the catalog has neither `hasPart` or `dataset`, return [] as it does not have the information we want
+  return { urls: [], errors };
 }
 
 /**
