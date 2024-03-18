@@ -131,13 +131,13 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
  * @function validateJsonLdId
  * @param {string} id - The expected '@id' or 'id' value, also the URL to be requested.
  * @param {boolean} expectHtml - A flag indicating whether the response is expected to be HTML (i.e. a Dataset Site).
- * @returns {Promise<{valid: boolean, error: string|null}>} - An object indicating the validity
+ * @returns {Promise<{isValid: boolean, error: string|null}>} - An object indicating the validity
  * of the JSON-LD and any associated error message.
  *
  * @example
  * validateJsonLdId('https://example.com/data.jsonld', false)
- *   .then(({valid, error}) => {
- *     if (valid) {
+ *   .then(({isValid, error}) => {
+ *     if (isValid) {
  *       console.log('JSON-LD is valid!');
  *     } else {
  *       console.error(`JSON-LD validation failed: ${error}`);
@@ -151,7 +151,7 @@ async function validateJsonLdId(id, expectHtml) {
     response = await axiosGetWithRetry(id);
     response = response.data;
   } catch (error) {
-    return { valid: false, error: `Failed to resolve URL: ${error.message}` };
+    return { isValid: false, error: `Failed to resolve URL: ${error.message}` };
   }
 
   let jsonLd;
@@ -161,18 +161,18 @@ async function validateJsonLdId(id, expectHtml) {
     } else if (!expectHtml && typeof response === 'object') {
       jsonLd = response;
     } else {
-      return { valid: false, error: `Unexpected response type: ${typeof response}` };
+      return { isValid: false, error: `Unexpected response type: ${typeof response}` };
     }
 
     const jsonId = jsonLd['@id'] || jsonLd.id;
     if (jsonId !== id) {
-      return { valid: false, error: `Mismatched '@id': From file: "${id}"; From referenced JSON-LD: "${jsonId}"` };
+      return { isValid: false, error: `Mismatched '@id': From file: "${id}"; From referenced JSON-LD: "${jsonId}"` };
     }
   } catch (error) {
-    return { valid: false, error: error.message };
+    return { isValid: false, error: error.message };
   }
 
-  return { valid: true, error: null };
+  return { isValid: true, error: null };
 }
 
 /*

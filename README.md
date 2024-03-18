@@ -119,22 +119,21 @@ This function validates the `@id` (or `id`, for backwards compatibility) propert
 
 #### Returns
 A `Promise` that resolves with an object containing:
-  - `valid` - A boolean that is `true` if the validation is successful (the expected `@id` matches the found `@id`) and `false` otherwise.
+  - `isValid` - A boolean that is `true` if the validation is successful (the expected `@id` matches the found `@id`) and `false` otherwise.
   - `error` - A string describing the error encountered during the validation process or `null` if the validation is successful.
 
 #### Usage
 ```javascript
 async function exampleUsage() {
   const id = "https://example.com/data.jsonld";
-  const { valid, error } = await validateJsonLdId(id, false);
+  const { isValid, error } = await validateJsonLdId(id, false);
 
-  if (valid) {
+  if (isValid) {
     console.log(`Validation successful for ID: ${id}`);
   } else {
     console.error(`Validation failed for ID: ${id}. Error: ${error}`);
   }
 }
-```
 
 
 ## Testing
