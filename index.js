@@ -99,7 +99,7 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
     let dataset;
     try {
       // Get JSONLD from dataset URLs
-      dataset = (await axiosGetWithRetry(datasetUrl)).data;
+      dataset = (await axiosGetWithRetryForKnownLegendIssue(datasetUrl)).data;
     } catch (error) {
       errors.push({
         url: datasetUrl,
@@ -128,7 +128,6 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
  * Note that this is only applicable to JSON-LD "@id" for the DataCatalog and Dataset types, which must resolve.
  *
  * @async
- * @function validateJsonLdId
  * @param {string} id - The expected '@id' or 'id' value, also the URL to be requested.
  * @param {boolean} expectHtml - A flag indicating whether the response is expected to be HTML (i.e. a Dataset Site).
  * @returns {Promise<{isValid: boolean, error: string|null}>} - An object indicating the validity
@@ -148,7 +147,7 @@ async function validateJsonLdId(id, expectHtml) {
   let response;
 
   try {
-    response = await axiosGetWithRetry(id);
+    response = await axiosGetWithRetryForKnownLegendIssue(id);
     response = response.data;
   } catch (error) {
     return { isValid: false, error: `Failed to resolve URL: ${error.message}` };
@@ -179,7 +178,7 @@ async function validateJsonLdId(id, expectHtml) {
 * System-specific workaround: Note that rate limits in Legend can cause this request to fail with a 403 (?), so we retry up to 5 times
 * TODO: Ask Legend to return a 429 instead
 */
-async function axiosGetWithRetry(url) {
+async function axiosGetWithRetryForKnownLegendIssue(url) {
   let response;
   const maxRetries = 5; // Define a maximum number of retries
 
@@ -194,6 +193,8 @@ async function axiosGetWithRetry(url) {
     } catch (error) {
       if (error.response && error.response.status === 403 && attempt < maxRetries - 1) {
         // Log a warning and retry after sleeping for a random duration between 1 and 3 seconds
+        // A random duration is used to avoid clients retrying at the same time and causing a thundering herd,
+        // particularly when a single service is serving multiple datasets.
         console.warn(`Attempt ${attempt + 1}: Access forbidden (403) for URL: ${url}. Retrying...`);
         await sleep(1000 + Math.random() * 2000); // Sleep for 1 to 3 seconds
       } else {

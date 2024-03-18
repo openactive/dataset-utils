@@ -115,7 +115,7 @@ This function validates the `@id` (or `id`, for backwards compatibility) propert
 
 #### Parameters
 - `id` (string): A string that specifies the expected `@id` or `id` value in the JSON-LD document.
-- `expectHtml` (boolean): A boolean flag indicating whether the fetched data is expected to be embedded within HTML (when `true`) or expected to be raw JSON-LD (when `false`).
+- `expectHtml` (boolean): A boolean flag indicating whether the fetched data is expected to be embedded within HTML such as for a Dataset Site (when `true`), or expected to be raw JSON-LD such as for a Data Catalogue (when `false`).
 
 #### Returns
 A `Promise` that resolves with an object containing:
@@ -134,6 +134,7 @@ async function exampleUsage() {
     console.error(`Validation failed for ID: ${id}. Error: ${error}`);
   }
 }
+```
 
 
 ## Testing
