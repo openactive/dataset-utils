@@ -29,6 +29,7 @@ If the URL supplied is a data catalog, it gets the `dataset` array and flattens 
 
 #### Returns
 A `Promise` that resolves with an object containing:
+  - `catalogMetadata`: A JSON-LD object of the root data catalog provided.
   - `urls` - An array of strings, each being a URL for a dataset.
   - `errors` - An array of error objects, each containing details about errors encountered during the retrieval process. If no errors were encountered, this array is empty. Each error object includes:
     - `url`: The URL from which data was being fetched when the error occurred.
@@ -86,7 +87,8 @@ The `errors` array it returns will detail any issues that occurred during the pr
 
 #### Returns:
 A `Promise` that resolves with an object containing:
-  - `jsonld`: An array of extracted JSON-LD objects from the datasets.
+  - `catalogMetadata`: A JSON-LD object of the root data catalog provided.
+  - `datasets`: An array of extracted JSON-LD objects from the Dataset Sites.
   - `errors`: An array of error objects indicating any issues encountered during fetching. Each error object includes:
     - `url`: The URL from which data was being fetched when the error occurred.
     - `status`: HTTP status code of the error response (if available).
@@ -96,8 +98,8 @@ A `Promise` that resolves with an object containing:
 ```js
 const { getAllDatasets } = require('@openactive/dataset-utils');
 
-getAllDatasets().then(({ jsonld, errors }) => {
-  console.log(jsonld);
+getAllDatasets().then(({ datasets, errors }) => {
+  console.log(datasets);
   
   // Iterating through the errors
   errors.forEach(error => {

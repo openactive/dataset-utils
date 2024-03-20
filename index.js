@@ -9,7 +9,7 @@ const { Parser } = require('htmlparser2');
  * If the URL is not supplied, the OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
  * @param {string} [dataCatalogUrl]
- * @returns {Promise<{urls: string[], errors: object[]}>}
+ * @returns {Promise<{catalogMetadata: Record<string,any>[], urls: string[], errors: object[]}>}
  */
 async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   let catalog;
@@ -35,16 +35,28 @@ async function getAllDatasetSiteUrls(dataCatalogUrl = 'https://openactive.io/dat
     const allUrls = [].concat(...datasetArraysAndErrors.map(data => data.urls));
     const allErrors = [].concat(...datasetArraysAndErrors.map(data => data.errors));
 
-    return { urls: allUrls, errors: allErrors };
+    return {
+      catalogMetadata: catalog,
+      urls: allUrls,
+      errors: allErrors,
+    };
   }
 
   // If the catalog has `dataset`, it does not have any further part catalogs and the datasets can be got from them
   if (catalog.dataset) {
-    return { urls: catalog.dataset, errors: [] };
+    return {
+      catalogMetadata: catalog,
+      urls: catalog.dataset,
+      errors: [],
+    };
   }
 
   // If the catalog has neither `hasPart` or `dataset`, return [] as it does not have the information we want
-  return { urls: [], errors };
+  return {
+    catalogMetadata: catalog,
+    urls: [],
+    errors,
+  };
 }
 
 /**
@@ -88,12 +100,12 @@ function extractJSONLDfromHTML(url, html) {
  * If dataCatalogUrl is not supplied, the default OA Data Catalog (https://openactive.io/data-catalogs/data-catalog-collection.jsonld) is used.
  *
  * @param {string} [dataCatalogUrl]
- * @returns {Promise<{jsonld: Record<string,any>[], errors: string[]}>}
+ * @returns {Promise<{catalogMetadata: Record<string,any>[],datasets: Record<string,any>[],errors: string[]}>}
  *
  */
 async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catalogs/data-catalog-collection.jsonld') {
   // Get Dataset URLs
-  const { urls: datasetUrls, errors } = await getAllDatasetSiteUrls(dataCatalogUrl);
+  const { catalogMetadata, urls: datasetUrls, errors } = await getAllDatasetSiteUrls(dataCatalogUrl);
 
   const jsonldFromDatasetUrls = (await Promise.all(datasetUrls.map(async (datasetUrl) => {
     let dataset;
@@ -109,13 +121,34 @@ async function getAllDatasets(dataCatalogUrl = 'https://openactive.io/data-catal
       return null;
     }
 
-    const jsonld = extractJSONLDfromHTML(datasetUrl, dataset);
-    return jsonld;
+    try {
+      const jsonld = extractJSONLDfromHTML(datasetUrl, dataset);
+      if (!jsonld || !jsonld['@id']) {
+        errors.push({
+          url: datasetUrl,
+          status: null,
+          message: 'Invalid JSON-LD found in dataset HTML - it did not contain `@id`.',
+        });
+        return null;
+      }
+      return jsonld;
+    } catch (error) {
+      errors.push({
+        url: datasetUrl,
+        status: null,
+        message: error.message,
+      });
+      return null;
+    }
   })))
     // Filter out datasets that do not have valid dataset
     .filter(x => !!x);
 
-  return { jsonld: jsonldFromDatasetUrls, errors };
+  return {
+    catalogMetadata,
+    datasets: jsonldFromDatasetUrls,
+    errors,
+  };
 }
 
 /**
@@ -188,7 +221,7 @@ async function axiosGetWithRetryForKnownLegendIssue(url) {
 
   for (let attempt = 0; attempt < maxRetries; attempt += 1) {
     try {
-      response = await axios.get(url);
+      response = await axios.get(url, { timeout: 60000 });
       break; // Exit the loop if the request was successful
     } catch (error) {
       if (error.response && error.response.status === 403 && attempt < maxRetries - 1) {

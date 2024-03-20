@@ -25,9 +25,11 @@ describe('getAllDatasets()', function () {
     });
 
     // Test
-    const { jsonld: datasets } = await getAllDatasets('https://openactive.io/data-catalogs/example-data-catalog-collection.jsonld');
+    const { datasets, errors } = await getAllDatasets('https://openactive.io/data-catalogs/example-data-catalog-collection.jsonld');
 
     // Assertions
+    expect(errors).to.be.an('array');
+    expect(errors.length).to.equal(0);
     expect(datasets).to.be.an('array');
     expect(datasets.length).to.be.above(0);
     expect(datasets[0]).to.be.an('object');
